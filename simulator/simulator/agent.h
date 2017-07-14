@@ -20,9 +20,12 @@ private:
 	message ctx;
 	pair<int,int> start;
 	pair<int,int> dest;
-	pair<int,int> now;
-	int k;					//move k steps
+	pair<int,int> current;
+	int s;					//move s steps
+	double k;				//slope of the line
+	double b;				//intercept on y of the line
 	int id;
+	pair<int,int> dir;		//(-1,-1)left&down (-1,0)left (-1,1)left&up (0,1)up (1,1)right&up (1,0)right (1,-1)right&down (0,-1)down
 
 public:
 	agent(int _id);
