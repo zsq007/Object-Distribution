@@ -3,7 +3,9 @@
 
 #include <iostream>
 #include "controller.h"
-#include "stdlib.h"
+#include <cstdlib>
+#include <vector>
+#include <utility>
 
 using namespace std;
 
@@ -12,19 +14,20 @@ class agent
 private:
 	struct message
 	{
-		int x;				//destination coordinate
-		int y;
-		int a[80];
-		int n;				//# agents met
+		pair<int,int> dest;	//destination coordinate
+		vector<int> met_agents;
 	};
 	message ctx;
-	int start_x;
-	int start_y;
+	pair<int,int> start;
+	pair<int,int> dest;
+	pair<int,int> now;
 	int k;					//move k steps
+	int id;
+
 public:
-	agent();
+	agent(int _id);
 	~agent();
-	void move();
+	pair<int,int> move();
 	void communicate();
 };
 
