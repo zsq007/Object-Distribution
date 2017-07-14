@@ -14,6 +14,9 @@
     <ClInclude Include="agent.h" />
     <ClInclude Include="controller.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="agent.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4FE2040B-2357-4D64-ABD3-DA6D86D774BB}</ProjectGuid>
     <RootNamespace>simulator</RootNamespace>
