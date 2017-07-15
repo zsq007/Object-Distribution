@@ -26,6 +26,7 @@ private:
 	double b;				//intercept on y of the line
 	int id;
 	pair<int,int> dir;		//(-1,-1)left&down (-1,0)left (-1,1)left&up (0,1)up (1,1)right&up (1,0)right (1,-1)right&down (0,-1)down
+	bool flagx =0;				//to distinguish whether the last step is a move in the y direction or the x direction
 
 public:
 	agent(int _id);
