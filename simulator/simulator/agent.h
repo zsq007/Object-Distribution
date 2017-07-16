@@ -14,25 +14,51 @@ class agent
 private:
 	struct message
 	{
+		pair<int,int> start;
 		pair<int,int> dest;	//destination coordinate
 		vector<int> met_agents;
+		vector<vector <vector <bool> > > memory_map;
+		vector<trk> track_map;
 	};
 	message ctx;
+
+	struct track
+	{
+		pair<int,int> start;
+		pair<int,int> dest;
+	};
+	track trk;
+	vector<vector <object> > mem_obj_pool;
+	vector<vector <bool> > private_mem_map;
+	vector<vector <vector <bool> > > public_mem_map;
+	vector<trk> mem_trk_pool;
 	pair<int,int> start;
 	pair<int,int> dest;
-	pair<int,int> current;
-	int s;					//move s steps
-	double k;				//slope of the line
-	double b;				//intercept on y of the line
+	pair<int,int> now;
+	int k;					//move k steps
 	int id;
-	pair<int,int> dir;		//(-1,-1)left&down (-1,0)left (-1,1)left&up (0,1)up (1,1)right&up (1,0)right (1,-1)right&down (0,-1)down
-	bool flagx =0;				//to distinguish whether the last step is a move in the y direction or the x direction
 
 public:
 	agent(int _id);
 	~agent();
 	pair<int,int> move();
-	void communicate();
+	bool is_intersect(int p_id);
+	message send_message();
+	void recv_message(message msg, int from_id);
+	object send_object(pair<int,int> object_number);
+	void recv_object(object obj, int from_id);
+	vector<trk> merge_mem_trk_pool(vector<trk> my_pool, vector<trk> other_pool);
+	vector<vector <vector <bool> > > merge_mem_map(vector<vector <vector <bool>>> my_map, vector<vector <vector <bool>>> other_map);
+	vector<pair <int,int> > decision(int to_id);
+
+	vector<vector <bool> > get_prv_mem_map()
+	{
+		return private_mem_map;
+	}
+	vector<vector <vector <bool> > > get_pub_mem_map()
+	{
+		return public_mem_map;
+	}
 };
 
 #endif

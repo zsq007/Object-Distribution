@@ -2,6 +2,16 @@
 #include "agent.h"
 #include <cstdlib>
 
+controller::controller(int map_size, int agent_number, int max_round)
+{
+	int i;
+
+	d = map_size;
+	max_run_time = max_round;
+	nagent_num = agent_number;
+	for(i = 0; i < )
+
+}
 void controller::run()
 {
 	int i, j, k;
@@ -11,23 +21,23 @@ void controller::run()
 	vector<pair <int,int> >	objnum;
 	object obj;
 
-	for(i = 0; i < n; i++)
+	for(i = 0; i < agent_num; i++)
 		agt[i].agent(i);
 	controller.round = 0;
 
 	while(!controller.check_terminate())
 	{
-		if(controller.get_round() >= MAX_RUN_TIME)	break;
+		if(controller.get_round() >= max_run_time)	break;
 
 		same_pos_agt.swap(vector<vector <int> >());					// clear the vector same_pos_agt
-		for(i - 0; i < n; i++)
+		for(i - 0; i < agent_num; i++)
 		{
 			agt[i].move();
 		}
 
-		for(i = 0; i < n; i++)
+		for(i = 0; i < agent_num; i++)
 		{
-			for( j = 0; j < n; j++)
+			for( j = 0; j < agent_num; j++)
 			{
 				if(controller.same_position(i, j) && i != j)		// judge whether agent i and j are in the same position
 				{
@@ -38,7 +48,7 @@ void controller::run()
 			}
 		}
 
-		for(i = 0; i < n; i++)
+		for(i = 0; i < agent_num; i++)
 		{
 			for(j = 0; j < same_pos_agt[i].size(); j++)
 			{
@@ -57,7 +67,7 @@ void controller::run()
 		controller.round++;
 	}
 
-	if(controller.get_round() < MAX_RUN_TIME)
+	if(controller.get_round() < max_run_time)
 	{
 		printf("Finished. Run time is %d.\n", controller.get_round());
 	}
@@ -72,14 +82,14 @@ bool controller::check_terminate()
 {
 	I = get_interest_matrix();
 
-	for(i = 0; i < n; i++)
+	for(i = 0; i < agent_num; i++)
 	{
 		bit_map = agt[i].get_prv_mem_map();
 		for(j = 0; j < I[i].size(); j++)
 		{
 			for(k = 0; k < I[i][j].size(); k++)
 			{
-				if(!(I[i][j][k] & bit_map[j][k]))	return false;
+				if(I[i][j][k] ^ bit_map[j][k])	return false;
 			}
 		}
 	}
