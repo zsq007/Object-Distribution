@@ -1,36 +1,17 @@
 #ifndef _controller_h
 #define _controller_h
 
-#include <iostream>
-#include <cstdlib>
-#include <vector>
-#include <utility>
+#include "agent.h"
 
 using namespace std;
 
 class controller
 {
-private:
-	int round;
-	int max_run_time;
-	int agent_num;
-	vector<vector <obj> > mem_pool;
-	static vector<vector <vector <bool> > > I;
-	struct object
-	{
-		int type;
-		int num;
-		char* content = new(20*sizeof(char));
-	}
-	object obj;
-
 public:
-	static int d;
-
-	controller(int map_size, int max_round);
+	controller::controller(int map_size, int agent_number, int max_round, pair<int, int> distance_range, pair<int, int> turning_probability);
 	~controller();
 	void run();
-	bool same_position(int i, int j);
+	bool same_position(pair <int,int> i, pair <int,int> j);
 	bool check_terminate();
 	int get_max_size()
 	{
@@ -45,6 +26,17 @@ public:
 	{
 		return I;
 	}
+
+private:
+	int round;
+	int max_run_time;
+	int agent_num;
+	int d;
+	pair <int,int> dist_range;
+	pair <int, int> turn_para;
+	static vector<vector <vector <bool> > > I;
+	vector<vector <agent::object> > mem_pool;
+	vector<agent> agt;
 };
 
 #endif

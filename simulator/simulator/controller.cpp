@@ -1,36 +1,38 @@
 #include "controller.h"
 #include "agent.h"
-#include <cstdlib>
 
-controller::controller(int map_size, int agent_number, int max_round)
+controller::controller(int map_size, int agent_number, int max_round, pair<int,int> distance_range, pair<int,int> turning_probability)
 {
 	int i;
 
 	d = map_size;
 	max_run_time = max_round;
-	nagent_num = agent_number;
-	for(i = 0; i < )
+	agent_num = agent_number;
+	dist_range = distance_range;
+	turn_para = turning_probability;
 
+	for(i = 0; i < agent_num; i++)
+		agt.push_back(agent(i, d, dist_range, turn_para));
+	
 }
+
 void controller::run()
 {
 	int i, j, k;
-	agent agt[n];
-	message msg;
+	agent::message msg;
 	vector<vector <int> > same_pos_agt;
 	vector<pair <int,int> >	objnum;
-	object obj;
+	agent::object obj;
 
-	for(i = 0; i < agent_num; i++)
-		agt[i].agent(i);
-	controller.round = 0;
 
-	while(!controller.check_terminate())
+	round = 0;
+
+	while(!check_terminate())
 	{
-		if(controller.get_round() >= max_run_time)	break;
+		if(get_round() >= max_run_time)	break;
 
 		same_pos_agt.swap(vector<vector <int> >());					// clear the vector same_pos_agt
-		for(i - 0; i < agent_num; i++)
+		for(i = 0; i < agent_num; i++)
 		{
 			agt[i].move();
 		}
@@ -39,7 +41,7 @@ void controller::run()
 		{
 			for( j = 0; j < agent_num; j++)
 			{
-				if(controller.same_position(i, j) && i != j)		// judge whether agent i and j are in the same position
+				if(same_position(agt[i].get_current_position(), agt[j].get_current_position()) && i != j)		// judge whether agent i and j are in the same position
 				{
 					msg = agt[i].send_message();							// i send the msg to j
 					agt[j].recv_message(msg, i);
@@ -52,7 +54,7 @@ void controller::run()
 		{
 			for(j = 0; j < same_pos_agt[i].size(); j++)
 			{
-				objnum.swap(vector<int>());							// clear the vector obj_num
+				objnum.swap(vector<pair <int, int> >());							// clear the vector obj_num
 				objnum = agt[i].decision(j);						// Run the distributed algorithm
 				if(objnum.empty())
 					continue;
@@ -64,12 +66,12 @@ void controller::run()
 			}
 
 		}
-		controller.round++;
+		round++;
 	}
 
-	if(controller.get_round() < max_run_time)
+	if(get_round() < max_run_time)
 	{
-		printf("Finished. Run time is %d.\n", controller.get_round());
+		printf("Finished. Run time is %d.\n",get_round());
 	}
 	else
 	{
@@ -80,7 +82,8 @@ void controller::run()
 
 bool controller::check_terminate()
 {
-	I = get_interest_matrix();
+	int i, j, k;
+	vector<vector <bool> > bit_map;
 
 	for(i = 0; i < agent_num; i++)
 	{
@@ -96,12 +99,12 @@ bool controller::check_terminate()
 	return true;
 }
 
-bool controller::same_position(int i, int j)
+bool controller::same_position(pair <int,int> i, pair <int,int> j)
 {
-	if(agt.[i].now.first == agt.[j].now.first
-		&& agt[i].now.second == agt[j].now.second)
+	if(i.first == j.first
+		&& i.second == j.second)
 	{
-		return True;
+		return true;
 	}
-	else return False;
+	else return false;
 }

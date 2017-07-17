@@ -2,53 +2,46 @@
 #define _agent_h
 
 #include <iostream>
-#include "controller.h"
 #include <cstdlib>
 #include <vector>
 #include <utility>
+#include <stdlib.h>
+#include <time.h>
 
 using namespace std;
 
 class agent
 {
-private:
+public:
+	agent(int _id, int _d, pair<int, int> _dist, pair<int, int> _turn_par);
+	~agent();
+
+	struct object
+	{
+		int type;
+		int num;
+		char information[20];
+	};
+	object obj;
+
 	struct message
 	{
-		pair<int,int> start;
-		pair<int,int> dest;	//destination coordinate
 		vector<int> met_agents;
+		vector<pair <int, int> > prv_trk_pool;
 		vector<vector <vector <bool> > > memory_map;
-		vector<trk> track_map;
+		vector<vector <pair <int,int> > > track_map;
 	};
 	message ctx;
 
-	struct track
-	{
-		pair<int,int> start;
-		pair<int,int> dest;
-	};
-	track trk;
-	vector<vector <object> > mem_obj_pool;
-	vector<vector <bool> > private_mem_map;
-	vector<vector <vector <bool> > > public_mem_map;
-	vector<trk> mem_trk_pool;
-	pair<int,int> start;
-	pair<int,int> dest;
-	pair<int,int> now;
-	int k;					//move k steps
-	int id;
-
-public:
-	agent(int _id);
-	~agent();
-	pair<int,int> move();
+	void track_generate();
+	void move();
 	bool is_intersect(int p_id);
 	message send_message();
 	void recv_message(message msg, int from_id);
-	object send_object(pair<int,int> object_number);
+	object send_object(pair <int,int> object_number);
 	void recv_object(object obj, int from_id);
-	vector<trk> merge_mem_trk_pool(vector<trk> my_pool, vector<trk> other_pool);
-	vector<vector <vector <bool> > > merge_mem_map(vector<vector <vector <bool>>> my_map, vector<vector <vector <bool>>> other_map);
+	vector<vector <pair <int,int> > > merge_public_trk_pool(vector<vector <pair <int,int> > > my_pool, vector<vector <pair <int,int> > > other_pool);
+	vector<vector <vector <bool> > > merge_mem_map(vector<vector <vector <bool> > > my_map, vector<vector <vector <bool> > > other_map);
 	vector<pair <int,int> > decision(int to_id);
 
 	vector<vector <bool> > get_prv_mem_map()
@@ -59,6 +52,30 @@ public:
 	{
 		return public_mem_map;
 	}
+	pair <int, int> get_current_position()
+	{
+		return current;
+	}
+
+private:
+	int d;
+	int min_dist, max_dist;
+	int turn_left_para, turn_right_para;
+	vector<vector <object> > mem_obj_pool;
+	vector<vector <bool> > private_mem_map;
+	vector<pair <int, int> > private_trk_pool;
+	vector<vector <vector <bool> > > public_mem_map;
+	vector<vector <pair <int, int> > > public_trk_pool;
+	pair<int, int> start;
+	pair<int, int> dest;
+	pair<int, int> current;
+	int dir;				// direction on track, 1 for start->dest, -1 for dest->start
+	int s;					// move s steps
+	int id;
+	int current_step;
+	enum direction { up, left, down, right };
+	enum position_state { middle, _up, _down, _left, _right, up_left, up_right, down_left, down_right };
+
 };
 
 #endif
