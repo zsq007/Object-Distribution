@@ -1,7 +1,7 @@
 #include "agent.h"
 #include "controller.h"
 
-agent::agent(int _id, int _d, pair<int,int> _dist, pair<int,int> _turn_para)
+agent::agent(int _id, int _d, pair<int,int> _dist, pair<int,int> _turn_para, vector<vector <vector <bool> > > _I)
 {
 	id = _id;
 	d = _d;
@@ -16,6 +16,7 @@ agent::agent(int _id, int _d, pair<int,int> _dist, pair<int,int> _turn_para)
 	current.first = start.first;
 	current.second = start.second;
 	dir = 1;
+	I = _I;
 
 	track_generate();
 }

@@ -1,19 +1,39 @@
 #include "controller.h"
 #include "agent.h"
 
-controller::controller(int map_size, int agent_number, int max_round, pair<int,int> distance_range, pair<int,int> turning_probability)
+controller::controller(int map_size, int agent_number, int max_round, pair<int,int> distance_range, pair<int,int> turning_probability, vector<vector <agent::object> > _mem_pool)
 {
-	int i;
-
+	int i,j;
+	
 	d = map_size;
 	max_run_time = max_round;
 	agent_num = agent_number;
 	dist_range = distance_range;
 	turn_para = turning_probability;
+	mem_pool = _mem_pool;
+	for(i = 0; i < mem_pool.size(); i++)
+	{
+		for(j = 0; j < mem_pool[i].size(); j++)
+		{
+			I[rand() % agent_num][i][j] = 1;
+		}
+	}
+
+	vector<vector <vector <bool> > > temp_mem_map;
+	int temp;
+	for(i = 0; i < mem_pool.size(); i++)
+	{
+		for(j = 0; j < mem_pool[i].size(); j++)
+		{
+			temp_mem_map[temp][i][j] = 1;
+		}
+	}
 
 	for(i = 0; i < agent_num; i++)
-		agt.push_back(agent(i, d, dist_range, turn_para));
-	
+	{
+		agt.push_back(agent(i, d, dist_range, turn_para, I));
+		agt[i].set_prv_mem_map(temp_mem_map[i]);
+	}
 }
 
 void controller::run()
