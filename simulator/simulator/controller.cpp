@@ -3,8 +3,11 @@
 
 controller::controller(int map_size, int agent_number, int max_round, pair<int,int> distance_range, pair<int,int> turning_probability, vector<vector <agent::object> > _mem_pool)
 {
-	int i,j;
+	int i, j, k;
+	FILE *fd1;
 	
+	fprintf(fopen("track_log.txt", "w+"), "");
+
 	d = map_size;
 	max_run_time = max_round;
 	agent_num = agent_number;
@@ -23,13 +26,15 @@ controller::controller(int map_size, int agent_number, int max_round, pair<int,i
 		for(j = 0; j < _mem_pool.size(); j++)
 		{
 			I[i][j].resize(_mem_pool[j].size());
+			for (k = 0; k < I[i][j].size(); k++)
+				I[i][j][k] = false;
 		}
 	}
 	for(i = 0; i < mem_pool.size(); i++)
 	{
 		for(j = 0; j < mem_pool[i].size(); j++)
 		{
-			I[rand() % agent_num][i][j] = 1;
+			I[rand() % agent_num][i][j] = true;
 		}
 	}
 
@@ -47,7 +52,7 @@ controller::controller(int map_size, int agent_number, int max_round, pair<int,i
 	{
 		for(j = 0; j < mem_pool[i].size(); j++)
 		{
-			temp_mem_map[rand() % agent_num][i][j] = 1;
+			temp_mem_map[rand() % agent_num][i][j] = true;
 		}
 	}
 
@@ -55,7 +60,14 @@ controller::controller(int map_size, int agent_number, int max_round, pair<int,i
 	{
 		agt.push_back(agent(i, d, dist_range, turn_para, I));
 		agt[i].set_prv_mem_map(temp_mem_map[i]);
+		agt[i].set_mem_obj_pool(mem_pool);
+		fd1 = fopen("track_log.txt", "a+");
+		fprintf(fd1, "Agent node: %d, roaming distance: %d\n", i, agt[i].get_distance());
+
+		fclose(fd1);
 	}
+
+	printf("Controller initialization finished.\n");
 }
 
 void controller::run()
@@ -80,7 +92,9 @@ void controller::run()
 	{
 		if(get_round() >= max_run_time)	break;
 
-		same_pos_agt.swap(vector<vector <int> >());					// clear the vector same_pos_agt
+		for (i = 0; i < agent_num; i++)
+			same_pos_agt[i].clear();					// clear the vector same_pos_agt
+
 		for(i = 0; i < agent_num; i++)
 		{
 			agt[i].move();
@@ -103,17 +117,19 @@ void controller::run()
 		{
 			for(j = 0; j < same_pos_agt[i].size(); j++)
 			{
-				objnum.swap(vector<pair <int, int> >());							// clear the vector obj_num
-				objnum = agt[i].decision(j);						// Run the distributed algorithm
+				objnum.clear();							// clear the vector obj_num
+				objnum = agt[i].decision(same_pos_agt[i][j]);						// Run the distributed algorithm
 				if(objnum.empty())
 					continue;
 				for(k = 0; k < objnum.size(); k++)
 				{
+					printf("Agent: %d, same_position_agt: %d, obj_to_send: %d, object_coordinate: %d, %d\n", same_pos_agt[i][j], objnum.size(), objnum[k].first, objnum[k].second);
 					obj = agt[i].send_object(objnum[k]);
 					agt[j].recv_object(obj, i);
 				}
 			}
 
+			printf("Agent: %d, round %d\n", i, round);
 		}
 		round++;
 	}

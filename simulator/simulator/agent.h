@@ -27,6 +27,7 @@ private:
 	int s;					// move s steps
 	int id;
 	int current_step;
+	int agent_num;
 	enum direction { up, left, down, right };
 	enum position_state { middle, _up, _down, _left, _right, up_left, up_right, down_left, down_right };
 	vector<vector <vector <bool> > > I;
@@ -39,7 +40,7 @@ public:
 	{
 		int type;
 		int num;
-		char information[20];
+		string information;
 	};
 	object obj;
 	vector<vector <object> > mem_obj_pool;
@@ -66,24 +67,38 @@ public:
 
 	void set_prv_mem_map(vector<vector <bool> > _private_mem_map)
 	{
-		int i;
+		int i, j;
 		private_mem_map.resize(_private_mem_map.size());
 		for(i = 0; i < _private_mem_map.size(); i++)
 		{
 			private_mem_map[i].resize(_private_mem_map[i].size());
+			for (j = 0; j < private_mem_map[i].size(); j++)
+				private_mem_map[i][j] = _private_mem_map[i][j];
 		}
-		private_mem_map = _private_mem_map;
+		//private_mem_map = _private_mem_map;
 	}
 
 	void set_mem_obj_pool(vector<vector <object> > _mem_obj_pool)
 	{
-		int i;
+		int i, j;
+		object temp_obj;
+
+		temp_obj.type = -1;
+		temp_obj.num = -1;
+		temp_obj.information = "";
+
 		mem_obj_pool.resize(_mem_obj_pool.size());
 		for(i = 0; i < _mem_obj_pool.size(); i++)
 		{
-			mem_obj_pool.resize(_mem_obj_pool.size());
+			mem_obj_pool[i].resize(_mem_obj_pool[i].size());
+			for (j = 0; j < mem_obj_pool[i].size(); j++)
+			{
+				if (private_mem_map[i][j])
+					mem_obj_pool[i][j] = _mem_obj_pool[i][j];
+				else
+					mem_obj_pool[i][j] = temp_obj;
+			}					
 		}
-		mem_obj_pool = _mem_obj_pool;
 	}
 
 	vector<vector <bool> > get_prv_mem_map()
@@ -97,6 +112,10 @@ public:
 	pair <int, int> get_current_position()
 	{
 		return current;
+	}
+	int get_distance()
+	{
+		return s;
 	}
 
 };

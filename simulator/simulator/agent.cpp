@@ -3,6 +3,9 @@
 
 agent::agent(int _id, int _d, pair<int,int> _dist, pair<int,int> _turn_para, vector<vector <vector <bool> > > _I)
 {
+
+	int i, j;
+
 	id = _id;
 	d = _d;
 	min_dist = _dist.first;
@@ -16,10 +19,10 @@ agent::agent(int _id, int _d, pair<int,int> _dist, pair<int,int> _turn_para, vec
 	current.first = start.first;
 	current.second = start.second;
 	dir = 1;
-	int agent_num;
+	current_step = 0;
+
 	agent_num = _I.size();
 	I.resize(agent_num);
-	int i,j;
 	for(i = 0; i < agent_num; i++)
 	{
 		I[i].resize(_I[i].size());
@@ -47,6 +50,15 @@ agent::agent(int _id, int _d, pair<int,int> _dist, pair<int,int> _turn_para, vec
 	}
 
 	track_generate();
+	dest = private_trk_pool[s - 1];
+
+
+	FILE *fd1 = fopen("track_log.txt", "a+");
+	for (i = 0; i < private_trk_pool.size(); i++)
+	{
+		fprintf(fd1, "%d, %d\n", private_trk_pool[i].first, private_trk_pool[i].second);
+	}
+	fclose(fd1);
 }
 
 void agent::track_generate()
@@ -416,12 +428,12 @@ void agent::track_generate()
 
 void agent::move()
 {
-	pair<int,int> tmp_pos;
-
+	if (s == 1)
+		return;
+	
 	if (current_step == 0)
 		dir = 1;
-
-	if (current_step == s - 1)
+	else if (current_step == s - 1)
 		dir = -1;
 
 	if (dir == 1)
@@ -429,8 +441,7 @@ void agent::move()
 	else if (dir == -1)
 		current_step--;
 
-	current.first = private_trk_pool[current_step].first;
-	current.second = private_trk_pool[current_step].second;
+	current = private_trk_pool[current_step];
 }
 
 bool agent::is_intersect(int p_id)
@@ -483,8 +494,7 @@ agent::object agent::send_object(pair<int, int> object_number)
 }
 
 void agent::recv_object(agent::object obj, int from_id)
-{
-	
+{	
 	mem_obj_pool[obj.type][obj.num] = obj;
 	private_mem_map[obj.type][obj.num] = true;
 	public_mem_map[id][obj.type][obj.num] = true;
@@ -527,7 +537,6 @@ vector<vector <vector <bool> > > agent::merge_mem_map(vector<vector <vector <boo
 vector<pair <int,int> > agent::decision(int to_id)
 {
 	int j, k;
-	pair <int, int> obj_co;
 	vector<pair <int, int> > object_coordinate;
 
 	// Naive method: send all objects
@@ -535,11 +544,9 @@ vector<pair <int,int> > agent::decision(int to_id)
 	{
 		for(k = 0; k < public_mem_map[to_id][j].size(); k++)
 		{
-			if (!public_mem_map[to_id][j][k])
+			if (!public_mem_map[to_id][j][k] && private_mem_map[j][k])
 			{
-				obj_co.first = j;
-				obj_co.second = k;
-				object_coordinate.push_back(obj_co);
+				object_coordinate.push_back(make_pair(j, k));
 			}				
 		}
 	}
