@@ -10,7 +10,21 @@ controller::controller(int map_size, int agent_number, int max_round, pair<int,i
 	agent_num = agent_number;
 	dist_range = distance_range;
 	turn_para = turning_probability;
+	mem_pool.resize(_mem_pool.size());
+	for(i = 0; i < mem_pool.size(); i++)
+	{
+		mem_pool[i].resize(_mem_pool[i].size());
+	}
 	mem_pool = _mem_pool;
+	I.resize(agent_num);
+	for(i = 0; i < agent_num; i++)
+	{
+		I[i].resize(_mem_pool.size());
+		for(j = 0; j < _mem_pool.size(); j++)
+		{
+			I[i][j].resize(_mem_pool[j].size());
+		}
+	}
 	for(i = 0; i < mem_pool.size(); i++)
 	{
 		for(j = 0; j < mem_pool[i].size(); j++)
@@ -20,12 +34,20 @@ controller::controller(int map_size, int agent_number, int max_round, pair<int,i
 	}
 
 	vector<vector <vector <bool> > > temp_mem_map;
-	int temp;
+	temp_mem_map.resize(agent_num);
+	for(i = 0; i < agent_num; i++)
+	{
+		temp_mem_map[i].resize(_mem_pool.size());
+		for(j = 0; j < _mem_pool.size(); j++)
+		{
+			temp_mem_map[i][j].resize(_mem_pool[j].size());
+		}
+	}
 	for(i = 0; i < mem_pool.size(); i++)
 	{
 		for(j = 0; j < mem_pool[i].size(); j++)
 		{
-			temp_mem_map[temp][i][j] = 1;
+			temp_mem_map[rand() % agent_num][i][j] = 1;
 		}
 	}
 
