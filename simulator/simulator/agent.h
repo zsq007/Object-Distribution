@@ -66,7 +66,24 @@ public:
 
 	void set_prv_mem_map(vector<vector <bool> > _private_mem_map)
 	{
+		int i;
+		private_mem_map.resize(_private_mem_map.size());
+		for(i = 0; i < _private_mem_map.size(); i++)
+		{
+			private_mem_map[i].resize(_private_mem_map[i].size());
+		}
 		private_mem_map = _private_mem_map;
+	}
+
+	void set_mem_obj_pool(vector<vector <object> > _mem_obj_pool)
+	{
+		int i;
+		mem_obj_pool.resize(_mem_obj_pool.size());
+		for(i = 0; i < _mem_obj_pool.size(); i++)
+		{
+			mem_obj_pool.resize(_mem_obj_pool.size());
+		}
+		mem_obj_pool = _mem_obj_pool;
 	}
 
 	vector<vector <bool> > get_prv_mem_map()

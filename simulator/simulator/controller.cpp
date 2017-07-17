@@ -66,6 +66,13 @@ void controller::run()
 	vector<pair <int,int> >	objnum;
 	agent::object obj;
 
+	same_pos_agt.resize(agent_num);
+	for(i = 0; i < agent_num; i++)
+	{
+		same_pos_agt[i].resize(agent_num);
+	}	
+
+	objnum.resize(mem_pool.size()*mem_pool[0].size());
 
 	round = 0;
 

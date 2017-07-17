@@ -16,7 +16,35 @@ agent::agent(int _id, int _d, pair<int,int> _dist, pair<int,int> _turn_para, vec
 	current.first = start.first;
 	current.second = start.second;
 	dir = 1;
+	int agent_num;
+	agent_num = _I.size();
+	I.resize(agent_num);
+	int i,j;
+	for(i = 0; i < agent_num; i++)
+	{
+		I[i].resize(_I[i].size());
+		for(j = 0; j < _I[i].size(); j++)
+		{
+			I[i][j].resize(_I[i][j].size());
+		}
+	}
 	I = _I;
+	public_trk_pool.resize(agent_num);
+	
+	for(i = 0; i < agent_num; i++)
+	{
+		public_trk_pool[i].resize(1);
+	}
+	
+	public_mem_map.resize(agent_num);
+	for(i = 0; i < agent_num; i++)
+	{
+		public_mem_map[i].resize(_I[i].size());
+		for(j = 0; j < _I[i].size(); j++)
+		{
+			public_mem_map[i][j].resize(_I[i][j].size());
+		}
+	}
 
 	track_generate();
 }
@@ -33,6 +61,7 @@ void agent::track_generate()
 		private_trk_pool.clear();
 
 	private_trk_pool.push_back(new_pos);
+	public_trk_pool[id].push_back(new_pos);
 	dir_para = rand() % 100;
 	if (dir_para < 25) gen_dir = up;
 	else if (dir_para < 50) gen_dir = down;
@@ -357,24 +386,28 @@ void agent::track_generate()
 			{
 				new_pos.second += 1;
 				private_trk_pool.push_back(new_pos);
+				public_trk_pool[id].push_back(new_pos);
 				break;
 			}
 			case down:
 			{
 				new_pos.second -= 1;
 				private_trk_pool.push_back(new_pos);
+				public_trk_pool[id].push_back(new_pos);
 				break;
 			}
 			case right:
 			{
 				new_pos.first += 1;
 				private_trk_pool.push_back(new_pos);
+				public_trk_pool[id].push_back(new_pos);
 				break;
 			}
 			case left:
 			{
 				new_pos.first -= 1;
 				private_trk_pool.push_back(new_pos);
+				public_trk_pool[id].push_back(new_pos);
 				break;
 			}
 		}
