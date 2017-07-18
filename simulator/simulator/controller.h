@@ -20,6 +20,7 @@ private:
 	vector<vector <agent::object> > mem_pool;
 	vector<vector <vector <bool> > > mem_map;		// Recording the initial memory map of everyone
 	vector<agent> agt;
+	vector<vector<pair<int,int>>> trace_pool;
 
 public:
 	controller::controller(int map_size, int agent_number, int max_round, pair<int, int> distance_range, pair<int, int> turning_probability, vector<vector <agent::object> > _mem_pool);

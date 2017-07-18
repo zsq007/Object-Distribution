@@ -1,7 +1,7 @@
 #include "agent.h"
 #include "controller.h"
 
-agent::agent(int _id, int _d, pair<int,int> _dist, pair<int,int> _turn_para, vector<vector <vector <bool> > > _I)
+agent::agent(int _id, int _d, pair<int,int> _dist, pair<int,int> _turn_para, vector<vector <vector <bool> > > _I, vector<vector<pair<int,int>>> _trace_pool)
 {
 
 	int i, j, k;
@@ -42,20 +42,51 @@ agent::agent(int _id, int _d, pair<int,int> _dist, pair<int,int> _turn_para, vec
 				public_mem_map[i][j][k] = false;
 		}
 	}
+	
+	bool flag = false;
 
 	track_generate();
+	
+	while(!flag && !_trace_pool.empty())
+	{
+		private_trk_pool.clear();
+		public_trk_pool[id].clear();
+		public_trk_pool[id].push_back(make_pair(-1,-1));
+		track_generate();
+		for(i = 0; i < _trace_pool.size() && !flag; i++)
+		{
+			for(j = 0; j < _trace_pool[i].size() && !flag; j++)
+			{
+				for(k = 0; k < private_trk_pool.size() && !flag; k++)
+					if(_trace_pool[i][j] == private_trk_pool[k]) 
+					{
+						flag = true;
+						break;
+					}
+			}
+		}	
+	}
+
 	dest = private_trk_pool[s - 1];
 
+	
 	FILE *fd1 = fopen("track_log.txt", "a+");
 	for (i = 0; i < private_trk_pool.size(); i++)
 	{
 		fprintf(fd1, "%d, %d\n", private_trk_pool[i].first, private_trk_pool[i].second);
 	}
 	fclose(fd1);
+	
 }
 
 void agent::set_prv_mem_map(vector<vector <bool> > _private_mem_map)
 {
+	private_mem_map.resize(_private_mem_map.size());
+	int i;
+	for(i = 0; i < _private_mem_map.size(); i++)
+	{
+		private_mem_map[i].resize(_private_mem_map[i].size());
+	}
 	private_mem_map = _private_mem_map;
 	public_mem_map[id] = private_mem_map;
 }
