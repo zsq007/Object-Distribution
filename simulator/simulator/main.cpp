@@ -39,7 +39,7 @@ int main()
 	}
 
 	// controller(map_size, agent_number, max_round, distance_range, turning_probability, _mem_pool);
-	controller ctl(100, 100, 100, make_pair(50,150), make_pair(10,10), mem_pool);
+	controller ctl(20, 50, 500, make_pair(10,30), make_pair(10,10), mem_pool);
 	ctl.run();
 	system("pause");
     return 0;
