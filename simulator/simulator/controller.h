@@ -23,10 +23,10 @@ private:
 	vector<vector<pair<int,int>>> trace_pool;
 
 public:
-	controller::controller(int map_size, int agent_number, int max_round, pair<int, int> distance_range, pair<int, int> turning_probability, vector<vector <agent::object> > _mem_pool);
+	controller::controller(int map_size, int agent_number, int max_round, pair<int, int> distance_range, pair<int, int> turning_probability, pair<int, int> topic_object);
 	~controller(){}
 
-	void run();
+	int run(int _move_para);
 	bool same_position(pair <int,int> i, pair <int,int> j);
 	bool check_terminate();
 

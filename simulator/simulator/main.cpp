@@ -13,53 +13,32 @@ int main()
 	srand((unsigned)time(NULL));
 
 	int i, j, k;
-	int t, o;
+	int move_para;
+	vector<vector <int> > run_time;
+	
+//  controller(map_size, agent_number, max_round, distance_range, turning_probability, topic_object);
+	controller ctl(100, 100,			10000, make_pair(100, 2000), make_pair(20, 20), make_pair(10, 200));
 
-	vector<vector <agent::object> > mem_pool;
-	agent::object obj;
-	/*cout << "input topic numbers:";
-	cin >> t;
-	cout << "input object number for every topic:";
-	cin >> o;*/
-	t = 1;
-	o = 2;
-	mem_pool.resize(t);
-	for(i = 0; i < t; i ++)
+	run_time.resize(11);
+	for (i = 0; i <= 100; i += 10)
 	{
-		for(j = 0; j < o; j++)
+		for (j = 0; j < 10; j++)
 		{
-			obj.type = i;
-			obj.num = j;
-			obj.information = "This is the ";
-			obj.information.push_back('a' + j - 1);
-			obj.information += "th object in ";
-			obj.information += ('a' + i - 1);
-			obj.information += "th topic";
-			mem_pool[i].push_back(obj);
+			run_time[i].push_back(ctl.run(i));
 		}
 	}
 
-	// controller(map_size, agent_number, max_round, distance_range, turning_probability, _mem_pool);
-	controller ctl(4, 10, 5000, make_pair(10,10), make_pair(20,20), mem_pool);
-	
-	vector<vector <vector <bool> > > I;
-	I = ctl.get_interest_matrix();
-	for(i = 0; i < I.size(); i++)
+	FILE *fd1;
+	fd1 = fopen("run_time_log.txt", "w+");
+	for (i = 0; i <= 100; i += 10)
 	{
-		cout << "for" << i << "------" << endl;
-		for(j = 0; j < I[i].size(); j++)
+		for (j = 0; j < 10; j++)
 		{
-			for(k = 0; k < I[i][j].size(); k++)
-			{
-				cout << I[i][j][k] << "\t";
-			}
-			cout << endl;
+			fprintf(fd1, "%d\t", run_time[i][j]);
 		}
+		fprintf(fd1, "\n");
 	}
-	system("pause");
-	
+	fclose(fd1);
 
-	ctl.run();
-	system("pause");
     return 0;
 }

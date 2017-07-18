@@ -60,11 +60,11 @@ public:
 	};
 	message ctx;
 
-	void set_prv_mem_map(vector<vector <bool> > _private_mem_map);
+	void set_mem_map(vector<vector <bool> > _private_mem_map);
 	void set_mem_obj_pool(vector<vector <object> > _mem_obj_pool);
 
 	void track_generate();
-	void move();
+	void move(int _move_para);
 	bool is_intersect(int p_id);
 
 	message send_message();

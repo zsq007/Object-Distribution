@@ -1,12 +1,10 @@
 #include "controller.h"
 #include "agent.h"
 
-controller::controller(int map_size, int agent_number, int max_round, pair<int,int> distance_range, pair<int,int> turning_probability, vector<vector <agent::object> > _mem_pool)
+controller::controller(int map_size, int agent_number, int max_round, pair<int,int> distance_range, pair<int,int> turning_probability, pair<int,int> topic_object)
 {
 	int i, j, k;
-	FILE *fd1;
-	
-	fprintf(fopen("track_log.txt", "w+"), "");
+	agent::object temp_obj;
 
 	srand((unsigned)time(NULL));
 
@@ -16,16 +14,30 @@ controller::controller(int map_size, int agent_number, int max_round, pair<int,i
 	dist_range = distance_range;
 	turn_para = turning_probability;
 
-	mem_pool = _mem_pool;
+	mem_pool.resize(topic_object.first);
+	for (i = 0; i < topic_object.first; i++)
+	{
+		for (j = 0; j < topic_object.second; j++)
+		{
+			temp_obj.type = i;
+			temp_obj.num = j;
+			temp_obj.information = "This is the ";
+			temp_obj.information.push_back('a' + j - 1);
+			temp_obj.information += "th object in ";
+			temp_obj.information += ('a' + i - 1);
+			temp_obj.information += "th topic";
+			mem_pool[i].push_back(temp_obj);
+		}
+	}
 
 	I.resize(agent_num);
 	for(i = 0; i < agent_num; i++)
 	{
-		I[i].resize(_mem_pool.size());
-		for(j = 0; j < _mem_pool.size(); j++)
+		I[i].resize(topic_object.first);
+		for (j = 0; j < topic_object.first; j++)
 		{
-			I[i][j].resize(_mem_pool[j].size());
-			for (k = 0; k < I[i][j].size(); k++)
+			I[i][j].resize(topic_object.second);
+			for (k = 0; k < topic_object.second; k++)
 				I[i][j][k] = false;
 		}
 	}
@@ -38,19 +50,19 @@ controller::controller(int map_size, int agent_number, int max_round, pair<int,i
 	}
 
 	mem_map.resize(agent_num);
-	for(i = 0; i < mem_map.size(); i++)
+	for(i = 0; i < agent_num; i++)
 	{
-		mem_map[i].resize(_mem_pool.size());
-		for(j = 0; j < _mem_pool.size(); j++)
+		mem_map[i].resize(topic_object.first);
+		for (j = 0; j < topic_object.first; j++)
 		{
-			mem_map[i][j].resize(_mem_pool[j].size());
-			for (k = 0; k < mem_map[i][j].size(); k++)
+			mem_map[i][j].resize(topic_object.second);
+			for (k = 0; k < topic_object.second; k++)
 				mem_map[i][j][k] = false;
 		}
 	}
-	for(j = 0; j < mem_pool.size(); j++)
+	for (j = 0; j < topic_object.first; j++)
 	{
-		for(k = 0; k < mem_pool[j].size(); k++)
+		for (k = 0; k < topic_object.second; k++)
 		{
 			mem_map[rand() % agent_num][j][k] = true;
 		}
@@ -59,32 +71,26 @@ controller::controller(int map_size, int agent_number, int max_round, pair<int,i
 	for(i = 0; i < agent_num; i++)
 	{
 		agt.push_back(agent(i, d, dist_range, turn_para, I, trace_pool));
-		agt[i].set_prv_mem_map(mem_map[i]);
-		agt[i].set_mem_obj_pool(mem_pool);
 		trace_pool.push_back(agt[i].get_prv_trk_pool());
-
-		fd1 = fopen("track_log.txt", "a+");
-		fprintf(fd1, "Agent node: %d, roaming distance: %d\n", i, agt[i].get_distance());
-		fclose(fd1);
 	}
 
 	printf("Controller initialization finished.\n");
 }
 
-void controller::run()
+int controller::run(int _move_para)
 {
 	int i, j, k;
 	agent::message msg;
 	vector<vector <int> > same_pos_agt;
 	vector<pair <int,int> >	objnum;
 	agent::object obj;
-	
-	srand((unsigned)time(NULL));
 
 	same_pos_agt.resize(agent_num);
 	for(i = 0; i < agent_num; i++)
 	{
 		same_pos_agt[i].resize(agent_num);
+		agt[i].set_mem_map(mem_map[i]);
+		agt[i].set_mem_obj_pool(mem_pool);
 	}	
 
 	objnum.resize(mem_pool.size()*mem_pool[0].size());
@@ -93,14 +99,14 @@ void controller::run()
 
 	while(!check_terminate())
 	{
-		if(get_round() >= max_run_time)	break;
+		if(round >= max_run_time)	break;
 
 		for (i = 0; i < agent_num; i++)
 			same_pos_agt[i].clear();					// clear the vector same_pos_agt
 
 		for(i = 0; i < agent_num; i++)
 		{
-			agt[i].move();
+			agt[i].move(_move_para);
 		}
 
 		for(i = 0; i < agent_num; i++)
@@ -131,19 +137,19 @@ void controller::run()
 					agt[same_pos_agt[i][j]].recv_object(obj, objnum[k], i);
 				}
 			}
-
-			//printf("Agent: %d, round %d\n", i, round);
 		}
 		round++;
 	}
 
-	if(get_round() < max_run_time)
+	if(round < max_run_time)
 	{
-		printf("Finished. Run time is %d.\n",get_round());
+		printf("Finished. Run time is %d.\n", round);
+		return round;
 	}
 	else
 	{
 		printf("Time out. Failed to send the messages.\n");
+		return -1;
 	}
 }
 

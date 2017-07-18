@@ -31,17 +31,7 @@ agent::agent(int _id, int _d, pair<int,int> _dist, pair<int,int> _turn_para, vec
 		public_trk_pool[i].push_back(make_pair(-1,-1));
 	}
 	
-	public_mem_map.resize(agent_num);
-	for(i = 0; i < agent_num; i++)
-	{
-		public_mem_map[i].resize(_I[i].size());
-		for(j = 0; j < _I[i].size(); j++)
-		{
-			public_mem_map[i][j].resize(_I[i][j].size());
-			for (k = 0; k < public_mem_map[i][j].size(); k++)
-				public_mem_map[i][j][k] = false;
-		}
-	}
+
 	
 	bool flag = false;
 
@@ -67,27 +57,26 @@ agent::agent(int _id, int _d, pair<int,int> _dist, pair<int,int> _turn_para, vec
 		}	
 	}
 
-	dest = private_trk_pool[s - 1];
-
-	
-	FILE *fd1 = fopen("track_log.txt", "a+");
-	for (i = 0; i < private_trk_pool.size(); i++)
-	{
-		fprintf(fd1, "%d, %d\n", private_trk_pool[i].first, private_trk_pool[i].second);
-	}
-	fclose(fd1);
-	
+	dest = private_trk_pool[s - 1];	
 }
 
-void agent::set_prv_mem_map(vector<vector <bool> > _private_mem_map)
+void agent::set_mem_map(vector<vector <bool> > _private_mem_map)
 {
-	private_mem_map.resize(_private_mem_map.size());
-	int i;
-	for(i = 0; i < _private_mem_map.size(); i++)
-	{
-		private_mem_map[i].resize(_private_mem_map[i].size());
-	}
+	int i, j, k;
+
 	private_mem_map = _private_mem_map;
+
+	public_mem_map.resize(agent_num);
+	for (i = 0; i < agent_num; i++)
+	{
+		public_mem_map[i].resize(_private_mem_map.size());
+		for (j = 0; j < _private_mem_map.size(); j++)
+		{
+			public_mem_map[i][j].resize(_private_mem_map[j].size());
+			for (k = 0; k < public_mem_map[i][j].size(); k++)
+				public_mem_map[i][j][k] = false;
+		}
+	}
 	public_mem_map[id] = private_mem_map;
 }
 
@@ -113,9 +102,9 @@ void agent::set_mem_obj_pool(vector<vector <object> > _mem_obj_pool)
 	}
 }
 
-void agent::move()
+void agent::move(int _move_para)
 {
-	if (s == 1)
+	if (s == 1 || rand() % 100 < _move_para)
 		return;
 	
 	if (current_step == 0)
