@@ -1,5 +1,6 @@
 #include "controller.h"
 #include "agent.h"
+#include <stdio.h>
 
 controller::controller(int map_size, int agent_number, int max_round, pair<int,int> distance_range, pair<int,int> turning_probability, pair<int,int> topic_object)
 {

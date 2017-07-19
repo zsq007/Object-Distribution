@@ -39,7 +39,7 @@ private:
 	enum position_state { middle, _up, _down, _left, _right, up_left, up_right, down_left, down_right };
 
 public:
-	agent(int _id, int _d, pair<int, int> _dist, pair<int, int> _turn_par, vector<vector <vector <bool> > > _I, vector<vector<pair<int,int>>> _trace_pool);
+	agent(int _id, int _d, pair<int, int> _dist, pair<int, int> _turn_par, vector<vector <vector <bool> > > _I, vector<vector<pair<int,int> > > _trace_pool);
 	~agent(){}
 
 	struct object
@@ -89,7 +89,7 @@ public:
 	{
 		return current;
 	}
-	vector<pair<int,int>> get_prv_trk_pool()
+	vector<pair<int,int> > get_prv_trk_pool()
 	{
 		return private_trk_pool;
 	}
