@@ -1,5 +1,4 @@
 #include "agent.h"
-#include "controller.h"
 
 agent::agent(int _id, int _d, pair<int,int> _dist, pair<int,int> _turn_para, vector<vector <vector <bool> > > _I, vector<vector<pair<int,int> > > _trace_pool)
 {

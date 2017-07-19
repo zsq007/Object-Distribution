@@ -5,8 +5,8 @@
 #include <cstdlib>
 #include <vector>
 #include <utility>
-#include <stdlib.h>
-#include <time.h>
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
 

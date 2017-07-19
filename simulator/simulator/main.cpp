@@ -1,6 +1,6 @@
 #include "controller.h"
 #include "agent.h"
-#include <time.h>
+#include <ctime>
 #include <cstdlib>
 #include <cstdio>
 #include <iostream>
@@ -8,12 +8,21 @@
 
 using namespace std;
 
+constexpr size_t map_size = 100;
+constexpr size_t agent_number = 100;
+constexpr size_t max_round = 10000;
+constexpr pair<size_t, size_t> distance_range = make_pair(100, 2000);
+constexpr pair<size_t, size_t> turning_probability = make_pair(20, 20);
+constexpr pair<size_t, size_t> topic_object = make_pair(10, 200);
+
 int main()
 {
-	srand((unsigned)time(NULL));
+	srand(clock());
 
-	int i, j, k;
-	int move_para;
+	int i, j;
+//  two unused local varible
+//	int k, move_para;
+
 	vector<vector <int> > run_time;
 	FILE *fd1;
 	

@@ -1,19 +1,21 @@
 #include "controller.h"
 #include "agent.h"
-#include <stdio.h>
+#include <cstdio>
 
 controller::controller(int map_size, int agent_number, int max_round, pair<int,int> distance_range, pair<int,int> turning_probability, pair<int,int> topic_object)
 {
 	int i, j, k;
 	agent::object temp_obj;
 
-	srand((unsigned)time(NULL));
-
+	srand(clock());
 	d = map_size;
 	max_run_time = max_round;
 	agent_num = agent_number;
 	dist_range = distance_range;
 	turn_para = turning_probability;
+
+	//TODO: check if it's proper to initialize member round here
+	round = 0;
 
 	mem_pool.resize(topic_object.first);
 	for (i = 0; i < topic_object.first; i++)
