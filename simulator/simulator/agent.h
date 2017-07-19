@@ -5,8 +5,8 @@
 #include <cstdlib>
 #include <vector>
 #include <utility>
-#include <cstdlib>
-#include <ctime>
+#include <stdlib.h>
+#include <time.h>
 
 using namespace std;
 
@@ -75,7 +75,9 @@ public:
 	vector<vector <pair <int,int> > > merge_public_trk_pool(vector<vector <pair <int,int> > > my_pool, vector<vector <pair <int,int> > > other_pool);
 	vector<vector <vector <bool> > > merge_mem_map(vector<vector <vector <bool> > > my_map, vector<vector <vector <bool> > > other_map);
 
-	vector<pair <int,int> > decision(int to_id);
+	vector<pair <int,int> > decision_naive(int to_id);
+	vector<pair <int,int> > decision_20_random(int to_id);
+	vector<pair <int,int> > decision_20_interest(int to_id);
 
 	vector<vector <bool> > get_prv_mem_map()
 	{
