@@ -2,9 +2,6 @@
 
 agent::agent(int _id, int _d, pair<int,int> _dist, pair<int,int> _turn_para, vector<vector <vector <bool> > > _I, vector<vector<pair<int,int> > > _trace_pool)
 {
-
-	int i, j, k;
-
 	id = _id;
 	d = _d;
 	I = _I;
@@ -25,7 +22,7 @@ agent::agent(int _id, int _d, pair<int,int> _dist, pair<int,int> _turn_para, vec
 	current_step = 0;
 
 	public_trk_pool.resize(agent_num);
-	for(i = 0; i < agent_num; i++)
+	for(int i = 0; i < agent_num; i++)
 	{
 		public_trk_pool[i].push_back(make_pair(-1,-1));
 	}
@@ -42,11 +39,11 @@ agent::agent(int _id, int _d, pair<int,int> _dist, pair<int,int> _turn_para, vec
 		public_trk_pool[id].clear();
 		public_trk_pool[id].push_back(make_pair(-1,-1));
 		track_generate();
-		for(i = 0; i < _trace_pool.size() && !flag; i++)
+		for(size_t i = 0; i < _trace_pool.size() && !flag; i++)
 		{
-			for(j = 0; j < _trace_pool[i].size() && !flag; j++)
+			for(size_t j = 0; j < _trace_pool[i].size() && !flag; j++)
 			{
-				for(k = 0; k < private_trk_pool.size() && !flag; k++)
+				for(size_t k = 0; k < private_trk_pool.size() && !flag; k++)
 					if(_trace_pool[i][j] == private_trk_pool[k]) 
 					{
 						flag = true;
@@ -61,18 +58,16 @@ agent::agent(int _id, int _d, pair<int,int> _dist, pair<int,int> _turn_para, vec
 
 void agent::set_mem_map(vector<vector <bool> > _private_mem_map)
 {
-	int i, j, k;
-
 	private_mem_map = _private_mem_map;
 
 	public_mem_map.resize(agent_num);
-	for (i = 0; i < agent_num; i++)
+	for (int i = 0; i < agent_num; i++)
 	{
 		public_mem_map[i].resize(_private_mem_map.size());
-		for (j = 0; j < _private_mem_map.size(); j++)
+		for (size_t j = 0; j < _private_mem_map.size(); j++)
 		{
 			public_mem_map[i][j].resize(_private_mem_map[j].size());
-			for (k = 0; k < public_mem_map[i][j].size(); k++)
+			for (size_t k = 0; k < public_mem_map[i][j].size(); k++)
 				public_mem_map[i][j][k] = false;
 		}
 	}
@@ -81,13 +76,11 @@ void agent::set_mem_map(vector<vector <bool> > _private_mem_map)
 
 void agent::set_mem_obj_pool(vector<vector <object> > _mem_obj_pool)
 {
-	int i, j;
-
 	mem_obj_pool.resize(_mem_obj_pool.size());
-	for(i = 0; i < _mem_obj_pool.size(); i++)
+	for(size_t i = 0; i < _mem_obj_pool.size(); i++)
 	{
 		mem_obj_pool[i].resize(_mem_obj_pool[i].size());
-		for (j = 0; j < mem_obj_pool[i].size(); j++)
+		for (size_t j = 0; j < mem_obj_pool[i].size(); j++)
 		{
 			if (private_mem_map[i][j])
 				mem_obj_pool[i][j] = _mem_obj_pool[i][j];
@@ -121,11 +114,9 @@ void agent::move(int _move_para)
 
 bool agent::is_intersect(int p_id)
 {
-	int i, j;
-	
-	for (i = 0; i < private_trk_pool.size(); i++)
+	for (size_t i = 0; i < private_trk_pool.size(); i++)
 	{
-		for (j = 0; j < public_trk_pool[p_id].size(); j++)
+		for (size_t j = 0; j < public_trk_pool[p_id].size(); j++)
 		{
 			if (private_trk_pool[i].first == public_trk_pool[p_id][j].first
 				&& private_trk_pool[i].second == public_trk_pool[p_id][j].second)
@@ -148,15 +139,13 @@ agent::message agent::send_message()
 
 void agent::recv_message(message msg, int from_id)
 {
-	int j, k;
-	
 	public_trk_pool[from_id] = msg.prv_trk_pool;
 	public_trk_pool = merge_public_trk_pool(public_trk_pool, msg.track_map);
 	
 	//public_mem_map = merge_mem_map(public_mem_map, msg.memory_map);
-	for(j = 0; j < msg.memory_map[from_id].size(); j++)
+	for(size_t j = 0; j < msg.memory_map[from_id].size(); j++)
 	{
-		for(k = 0; k < msg.memory_map[from_id][j].size(); k++)
+		for(size_t k = 0; k < msg.memory_map[from_id][j].size(); k++)
 		{
 			public_mem_map[from_id][j][k] = msg.memory_map[from_id][j][k];
 		}
@@ -177,9 +166,7 @@ void agent::recv_object(agent::object obj, pair <int,int> obj_coordinate, int fr
 
 vector<vector <pair <int,int> > > agent::merge_public_trk_pool(vector<vector <pair <int,int> > > my_pool, vector<vector <pair <int,int> > > other_pool)
 {
-	int i;
-
-	for(i = 0; i < my_pool.size(); i++)
+	for(size_t i = 0; i < my_pool.size(); i++)
 	{
 		if(my_pool[i][0].first == -1 && other_pool[i][0].first != -1)
 		{
@@ -192,13 +179,11 @@ vector<vector <pair <int,int> > > agent::merge_public_trk_pool(vector<vector <pa
 
 vector<vector <vector <bool> > > agent::merge_mem_map(vector<vector <vector <bool> > > my_map, vector<vector <vector <bool> > > other_map)
 {
-	int i, j, k;
-	
-	for(i = 0; i < my_map.size(); i++)
+	for(size_t i = 0; i < my_map.size(); i++)
 	{
-		for(j = 0; j < my_map[i].size(); j++)
+		for(size_t j = 0; j < my_map[i].size(); j++)
 		{
-			for(k = 0; k < my_map[i][j].size(); k++)
+			for(size_t k = 0; k < my_map[i][j].size(); k++)
 			{
 				if(!my_map[i][j][k] && other_map[i][j][k])
 					my_map[i][j][k] = true;
@@ -211,13 +196,12 @@ vector<vector <vector <bool> > > agent::merge_mem_map(vector<vector <vector <boo
 
 vector<pair <int,int> > agent::decision(int to_id)
 {
-	int j, k;
 	vector<pair <int, int> > object_coordinate;
 
 	// Naive method: send all objects
-	for(j = 0; j < public_mem_map[to_id].size(); j++)
+	for(size_t j = 0; j < public_mem_map[to_id].size(); j++)
 	{
-		for(k = 0; k < public_mem_map[to_id][j].size(); k++)
+		for(size_t k = 0; k < public_mem_map[to_id][j].size(); k++)
 		{
 			if (!public_mem_map[to_id][j][k] && private_mem_map[j][k])
 			{
@@ -231,7 +215,6 @@ vector<pair <int,int> > agent::decision(int to_id)
 
 void agent::track_generate()
 {
-	int i;
 	enum direction gen_dir;
 	enum position_state pos_state;
 	int dir_para;
@@ -248,7 +231,7 @@ void agent::track_generate()
 	else if (dir_para < 75) gen_dir = left;
 	else gen_dir = right;
 
-	for (i = 0; i < s; i++)
+	for (int i = 0; i < s; i++)
 	{
 		dir_para = rand() % 100;
 

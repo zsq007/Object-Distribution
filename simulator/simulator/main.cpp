@@ -19,7 +19,6 @@ int main()
 {
 	srand(clock());
 
-	int i, j;
 //  two unused local varible
 //	int k, move_para;
 
@@ -30,9 +29,9 @@ int main()
 	controller ctl(100, 100,			10000, make_pair(100, 2000), make_pair(20, 20), make_pair(10, 200));
 
 	run_time.resize(100);
-	for (i = 20; i <= 80; i += 10)
+	for (int i = 20; i <= 80; i += 10)
 	{
-		for (j = 0; j < 10; j++)
+		for (int j = 0; j < 10; j++)
 		{
 			run_time[i].push_back(ctl.run(i));
 			fd1 = fopen("run_time_log.txt", "a+");
