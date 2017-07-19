@@ -1,16 +1,18 @@
 #include "agent.h"
 
-agent::agent(int _id, int _d, pair<int,int> _dist, pair<int,int> _turn_para, vector<vector <vector <bool> > > _I, vector<vector<pair<int,int> > > _trace_pool)
+agent::agent(int _id, int _d, pair<int,int> _dist, pair<int,int> _turn_para, vector<vector <vector <bool> > > _I, vector<vector<pair<int,int> > > _trace_pool) :
+	id(_id), d(_d), I(_I), agent_num(_I.size()), min_dist(_dist.first), max_dist(_dist.second), 
+	turn_left_para(_turn_para.first), turn_right_para(_turn_para.second), dir(1), current_step(0)
 {
-	id = _id;
-	d = _d;
-	I = _I;
-	agent_num = _I.size();
+	// id = _id;
+	// d = _d;
+	// I = _I;
+	// agent_num = _I.size();
 
-	min_dist = _dist.first;
-	max_dist = _dist.second;
-	turn_left_para = _turn_para.first;
-	turn_right_para = _turn_para.second;
+	// min_dist = _dist.first;
+	// max_dist = _dist.second;
+	// turn_left_para = _turn_para.first;
+	// turn_right_para = _turn_para.second;
 
 	start.first = rand() % d;
 	start.second = rand() % d;
@@ -18,17 +20,15 @@ agent::agent(int _id, int _d, pair<int,int> _dist, pair<int,int> _turn_para, vec
 
 	current.first = start.first;
 	current.second = start.second;
-	dir = 1;
-	current_step = 0;
+	// dir = 1;
+	// current_step = 0;
 
 	public_trk_pool.resize(agent_num);
 	for(int i = 0; i < agent_num; i++)
 	{
 		public_trk_pool[i].push_back(make_pair(-1,-1));
 	}
-	
-
-	
+		
 	bool flag = false;
 
 	track_generate();

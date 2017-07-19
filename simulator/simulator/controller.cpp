@@ -2,19 +2,20 @@
 #include "agent.h"
 #include <cstdio>
 
-controller::controller(int map_size, int agent_number, int max_round, pair<int,int> distance_range, pair<int,int> turning_probability, pair<int,int> topic_object)
+controller::controller(int map_size, int agent_number, int max_round, pair<int,int> distance_range, pair<int,int> turning_probability, pair<int,int> topic_object) :
+	d(map_size), max_run_time(max_round), agent_num(agent_number), dist_range(distance_range), turn_para(turning_probability), round(0)
 {
 	agent::object temp_obj;
 
 	srand(clock());
-	d = map_size;
-	max_run_time = max_round;
-	agent_num = agent_number;
-	dist_range = distance_range;
-	turn_para = turning_probability;
+	//d = map_size;
+	//max_run_time = max_round;
+	//agent_num = agent_number;
+	//dist_range = distance_range;
+	//turn_para = turning_probability;
 
-	//TODO: check if it's proper to initialize member round here
-	round = 0;
+	////TODO: check if it's proper to initialize member round here
+	//round = 0;
 
 	mem_pool.resize(topic_object.first);
 	for (int i = 0; i < topic_object.first; i++)
@@ -125,13 +126,13 @@ int controller::run(int _move_para)
 
 		for(int i = 0; i < agent_num; i++)
 		{
-			for(int j = 0; j < same_pos_agt[i].size(); j++)
+			for(size_t j = 0; j < same_pos_agt[i].size(); j++)
 			{
 				objnum.clear();							// clear the vector obj_num
 				objnum = agt[i].decision(same_pos_agt[i][j]);						// Run the distributed algorithm
 				if(objnum.empty())
 					continue;
-				for(int k = 0; k < objnum.size(); k++)
+				for(size_t k = 0; k < objnum.size(); k++)
 				{
 					printf("Round: %d, agent: %d, same_position_agt: %d, obj_to_send: %d, object_coordinate: %d, %d\n", round, i, same_pos_agt[i][j], objnum.size(), objnum[k].first, objnum[k].second);
 					obj = agt[i].send_object(objnum[k]);
